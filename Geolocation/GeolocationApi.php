@@ -2,7 +2,9 @@
 	namespace Fkr\NominatimBundle\Geolocation;
 	
 	use Fkr\NominatimBundle\Entity\Location;
-	
+	use Symfony\Component\HttpFoundation\RequestStack;
+	use Symfony\Component\Translation\DataCollectorTranslator;
+
 
 	class GeolocationApi {
 		
@@ -19,9 +21,10 @@
 		protected $local;
 		
 		
-		public function __construct($appName, $appMail, $request) {
+		public function __construct($appName, $appMail, RequestStack $requestStack, DataCollectorTranslator $translator) {
 			$this->userAgent = 'FkrNominatimBundle '.$appName.' - '.$appMail;
-			$this->local = $request->getLocale();
+			$request = $requestStack->getCurrentRequest();
+			$this->local = is_null($request) ? $translator->getLocale() : $request->getLocale();
 		}
 		
 		/**
